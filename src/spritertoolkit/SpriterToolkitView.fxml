@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.net.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?> 
+<?import javafx.scene.canvas.*?>
+<?import javafx.collections.*?>
+
+<HBox   fx:id="rootView" spacing="10" 
+        xmlns:fx="http://javafx.com/fxml"
+        fx:controller="spritertoolkit.SpriterToolkitController"  
+        styleClass="root">
+    
+    <padding>
+        <Insets top = "15" right = "15" bottom = "15" left = "15" />
+    </padding> 
+    
+    <!-- Sprite explorer -->
+    <VBox fx:id="explorerVb" HBox.hgrow="ALWAYS" spacing="10">
+        
+        <ButtonBar ButtonBar.buttonUniformSize="true" buttonMinWidth="145">
+            <buttons>
+                <Button fx:id="loadBtn" text="Open" onAction="#openSpriteSheet">
+                    <graphic>
+                        <ImageView preserveRatio="true" >
+                          <image>
+                              <Image url="@ui/ic0_32px.png"/>
+                          </image>
+                        </ImageView>
+                    </graphic>
+                </Button>
+                <Button fx:id="saveAllBtn" text="Export All" onAction="#saveAll">
+                    <graphic>
+                        <ImageView preserveRatio="true">
+                          <image>
+                            <Image url="@ui/ic2_32px.png" />
+                          </image>
+                        </ImageView>
+                    </graphic>
+                </Button>
+                <Button fx:id="saveBtn" text="Export Selected" onAction="#saveSelected">
+                    <graphic>
+                        <ImageView preserveRatio="true">
+                          <image>
+                            <Image url="@ui/ic1_32px.png" />
+                          </image>
+                        </ImageView>
+                    </graphic>
+                </Button>
+            </buttons>
+        </ButtonBar>
+        
+        <HBox id="spriteExplorerContainer" VBox.vgrow="ALWAYS" >
+            
+            <ScrollPane fx:id="spritesExplorer" fitToWidth="true" fitToHeight="true"   
+                        HBox.hgrow="ALWAYS" >
+                <FlowPane fx:id="previewsViewport" hgap="5" vgap="5" >
+                    <padding>
+                        <Insets top = "5" right = "5" bottom = "5" left = "5" />
+                    </padding> 
+                    <ImageView fx:id="preview">
+                          <!--<image>
+                            <Image url="@ui/4.png" />
+                          </image> -->
+                    </ImageView>
+                </FlowPane>
+            </ScrollPane>
+        </HBox>
+    </VBox>
+    
+    <!-- Setting panel-->
+    <VBox fx:id="settingsVB" spacing ="30" HBox.hgrow="ALWAYS">
+       
+        <!-- Option panel-->
+        <HBox styleClass="section-header">
+            <padding>
+                <Insets top = "5" right = "0" bottom = "5" left = "20" />
+            </padding> 
+            <Text text="Options"  />
+        </HBox>
+        
+            
+        <padding>
+            <Insets top = "0" right = "20" bottom = "0" left = "20" />
+        </padding> 
+
+        <HBox spacing="20">
+            <Label fx:id="mappingOption1Label" minWidth="80"
+                   styleClass="settingLabels" text="Correction: " /> 
+            <TextField fx:id="mappingParam1Field" text="1" maxWidth="50"/>
+
+            <Label fx:id="mappingOption2Label" minWidth="105" 
+                   styleClass="settingLabels" text="Merge Distance: " /> 
+            <TextField fx:id="mappingParam2Field" text="2" maxWidth="50" />
+        </HBox>
+
+        <HBox spacing="10" >
+            <Label styleClass="settingLabels" text="Mapping "/>
+
+            <ChoiceBox fx:id="mappingChoice" value="Contour" >
+                <items>
+                    <FXCollections fx:factory="observableArrayList">
+                        <String fx:value="Contour"/>
+                        <String fx:value="Grid" />
+                    </FXCollections>
+                </items>
+            </ChoiceBox>
+            
+            <ButtonBar ButtonBar.buttonUniformSize="true" buttonMinWidth="80">
+                <buttons>
+                    <Button text="Reset" onAction="#resetMappingParameters"/> 
+                    <Button text="Map" onAction="#mapSpriteSheet"/> 
+                </buttons>
+            </ButtonBar>
+        </HBox>
+        
+        <!-- Sprite settings-->
+        <HBox styleClass="section-header">
+            <padding>
+                <Insets top = "5" right = "0" bottom = "5" left = "20" />
+            </padding> 
+            <Text text="Sprite Settings"  />
+        </HBox>
+         
+        <GridPane id="spriteSettingsGrid"  styleClass="settingPanel" vgap ="10" hgap="10">
+            <padding>
+                <Insets top = "20" right = "20" bottom = "20" left = "20" />
+            </padding> 
+            <Label styleClass="settingLabels" text="Name: " 
+                  GridPane.rowIndex="0" GridPane.columnIndex="0"/> 
+            <TextField fx:id="spriteName"
+                       GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+                
+            <Label styleClass="settingLabels" text="X: " 
+                  GridPane.rowIndex="1" GridPane.columnIndex="0"/> 
+            <TextField fx:id="xField" 
+                       editable="false" styleClass="uneditableField"
+                       GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+            
+            <Label styleClass="settingLabels" text="Y: " 
+                  GridPane.rowIndex="2" GridPane.columnIndex="0"/> 
+            
+            <TextField fx:id="yField" 
+                       editable="false" styleClass="uneditableField"
+                       GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+            
+            <Label styleClass="settingLabels" text="Width: " 
+                  GridPane.rowIndex="3" GridPane.columnIndex="0"/> 
+            <TextField fx:id="widthField" 
+                       editable="false" styleClass="uneditableField"
+                       GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+            
+            <Label styleClass="settingLabels" text="Height: " 
+                  GridPane.rowIndex="4" GridPane.columnIndex="0"/> 
+            <TextField fx:id="heightField" 
+                       editable="false" styleClass="uneditableField"
+                       GridPane.rowIndex="4" GridPane.columnIndex="1"/> 
+        </GridPane>
+        
+        <!-- Exporter-->
+        <HBox styleClass="section-header">
+            <padding>
+                <Insets top = "5" right = "0" bottom = "5" left = "20" />
+            </padding> 
+            <Text text="Exporter"  />
+        </HBox>
+        
+        <GridPane id="exporterG" styleClass="settingPanel" vgap ="10" hgap="10">
+            <padding>
+                <Insets top = "20" right = "20" bottom = "20" left = "20" />
+            </padding> 
+            
+            <HBox spacing="20" 
+                  GridPane.rowIndex="0" GridPane.columnIndex="0">
+                
+                <Label styleClass="settingLabels" text="File Name: "/>
+                <TextField fx:id="filenameField"/>
+
+                <ChoiceBox fx:id="exportFormat" value="json" >
+                    <items>
+                        <FXCollections fx:factory="observableArrayList">
+                            <String fx:value="xml"/>
+                            <String fx:value="json" />
+                            <String fx:value="txt" />
+                        </FXCollections>
+                    </items>
+                </ChoiceBox>
+            
+                <Button text="Export" onAction="#exportData" />
+            
+            </HBox>
+            
+            <TextArea fx:id="formatPreview" 
+                      editable="false" id="uneditable-TextArea"
+                      GridPane.rowIndex="1" GridPane.columnIndex="0" />
+        </GridPane>
+        
+    </VBox>
+    
+    <stylesheets>
+        <URL value="@SpriterToolkitStyle.css"/>
+    </stylesheets>
+    
+</HBox>
