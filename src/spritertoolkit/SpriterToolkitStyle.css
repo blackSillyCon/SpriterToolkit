@@ -23,9 +23,6 @@ and open the template in the editor.
     -fx-font-style: oblique;
     -fx-background-color: linear-gradient(#FAFAFA, #E7E7E7);
 }
-#spritesExplorer{
-    -fx-background: #FFFFFF;
-}
 
 #spriteExplorerContainer{
     -fx-border-color: #D7D7D7;

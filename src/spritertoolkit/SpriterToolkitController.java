@@ -44,24 +44,17 @@ public class SpriterToolkitController implements Initializable {
     
     @FXML private HBox rootView;
     @FXML private VBox settingsVB;
-    @FXML private Button loadBtn;
-    @FXML private Button saveBtn;
-    @FXML private Button saveAllBtn;
     @FXML private TextField spriteName;
     @FXML private TextField xField;
     @FXML private TextField yField;
     @FXML private TextField widthField;
     @FXML private TextField heightField;
     @FXML private TextField filenameField;
-    @FXML private Button exportBtn;
     @FXML private TextArea formatPreview;
-    @FXML private ScrollPane spritesExplorer;
     @FXML private FlowPane previewsViewport;
     @FXML private ImageView preview;
     @FXML private ChoiceBox mappingChoice;
     @FXML private ChoiceBox exportFormat;
-    @FXML private HBox mappingHb;
-    @FXML private VBox explorerVb;
     @FXML private Label mappingOption1Label;
     @FXML private Label mappingOption2Label;
     @FXML private TextField mappingParam1Field;
@@ -218,23 +211,18 @@ public class SpriterToolkitController implements Initializable {
         heightField.setText(String.valueOf(sprite.getSpriteHeight()));
     }
     
-    private void exportSpriteViewAsImage(int index){
-        File folder = dirChooser.showDialog(stage);
-        
-        if(folder != null){
-            SpriteView spriteView = spriteViews[index];
-            StringBuilder path = new StringBuilder();
-            path.append(folder.getPath()).append( "\\");
-            path.append(spriteView.getSpriteName()).append(".png");
-            
-            try{
-                File out = new File(path.toString());
-                ImageIO.write(SwingFXUtils.fromFXImage(spriteView.getImage(), null), "png", out);
-            } catch (IOException ex){
-                Logger.getLogger(CLASS_NAME)
-                                .log(Level.SEVERE, null, ex);
-            }
-            
+    private void exportSpriteViewAsImage(int index, File folder){
+        SpriteView spriteView = spriteViews[index];
+        StringBuilder path = new StringBuilder();
+        path.append(folder.getPath()).append( "\\");
+        path.append(spriteView.getSpriteName()).append(".png");
+
+        try{
+            File out = new File(path.toString());
+            ImageIO.write(SwingFXUtils.fromFXImage(spriteView.getImage(), null), "png", out);
+        } catch (IOException ex){
+            Logger.getLogger(CLASS_NAME)
+                            .log(Level.SEVERE, null, ex);
         }
     }
     
@@ -294,20 +282,25 @@ public class SpriterToolkitController implements Initializable {
     }
     
     @FXML
-    private void saveSelected(ActionEvent event) {
-        if(spritesheetIsMapped)
-            exportSpriteViewAsImage(activeSpriteID);
+    private void spriteExporter(ActionEvent event) {
+        File folder = dirChooser.showDialog(stage);
+        if(folder != null){
+            if(spritesheetIsMapped){
+                String srcName = ((Button)event.getSource()).getText();
+                if( srcName.equals("Export All")){
+                        for(int i = 0; i < spriteViews.length; i++)
+                            exportSpriteViewAsImage(i, folder);
+                } else {
+                    exportSpriteViewAsImage(activeSpriteID, folder);
+                }
+            }
+        }
+        
+            
     }
     
     @FXML
-    private void saveAll(ActionEvent event) {
-        if(spritesheetIsMapped)
-            for(int i = 0; i < spriteViews.length; i++)
-                exportSpriteViewAsImage(i);
-    }
-    
-    @FXML
-    private void exportData(ActionEvent event){
+    private void exportSpritesheetData(ActionEvent event){
         File folder = dirChooser.showDialog(stage);
         
         if(folder != null){
